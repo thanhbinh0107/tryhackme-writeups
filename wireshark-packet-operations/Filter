@@ -1,0 +1,28 @@
+
+http.request.method == "GET" && tcp.dstport == 80
+dns && dns.flags.response == 0 && dns.qry.type == 1
+Note: Some "DNS-like" traffic can be LLMNR. Use dns && ... to filter real DNS only.
+
+Advanced Filtering Examples
+contains
+http.server contains "Microsoft IIS"
+
+matches (regex)
+http.host matches "\.(php|html)"
+
+even TTL numbers (regex)
+string(ip.ttl) matches "[02468]$"
+
+Checksum Control Profile
+
+Switched to the Checksum Control profile to detect checksum errors.
+
+Example filter:
+
+tcp.checksum_bad.expert
+
+Notes
+
+Wireshark field names can differ depending on version/profile.
+
+If unsure, right-click a field → Apply as Filter → Selected.
