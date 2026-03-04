@@ -1,0 +1,105 @@
+1. What is HTTP
+
+HTTP (Hypertext Transfer Protocol) is a cleartext client-server protocol used to deliver web content.
+
+Because it is unencrypted, analysts can inspect:
+URLs
+Headers
+User agents
+Form data
+Payloads
+
+Common Threats Detectable
+Phishing websites
+Web exploitation
+Data exfiltration
+
+Command & Control (C2)
+
+2. Basic HTTP Filters
+Show HTTP traffic
+http
+HTTP/2 traffic
+http2
+3. HTTP Request Methods
+GET
+Request data from server.
+http.request.method == "GET"
+POST
+Send data to server (often login forms, uploads).
+http.request.method == "POST"
+Show all HTTP requests
+http.request
+
+4. Important HTTP Response Codes
+Code	Meaning
+200	OK
+301	Moved permanently
+302	Redirect
+400	Bad request
+401	Unauthorized
+403	Forbidden
+404	Not found
+405	Method not allowed
+408	Timeout
+500	Internal server error
+503	Service unavailable
+
+Example filters:
+
+http.response.code == 200
+http.response.code == 404
+http.response.code == 503
+
+5. Important HTTP Parameters
+User-Agent
+Identifies browser / tool.
+http.user_agent
+URI (requested resource)
+http.request.uri
+Example:
+http.request.uri contains "admin"
+Full URL
+http.request.full_uri
+Host
+http.host
+Example:
+http.host contains "example"
+Server software
+http.server contains "apache"
+
+6. User-Agent Analysis
+The User-Agent field can reveal tools used by attackers.
+Example malicious tools:
+Nmap
+sqlmap
+Nikto
+Wfuzz
+Filter:
+(http.user_agent contains "sqlmap") or 
+(http.user_agent contains "Nmap") or 
+(http.user_agent contains "Wfuzz") or 
+(http.user_agent contains "Nikto")
+Suspicious Signs
+Different user agents from the same IP quickly
+Misspelled user agents
+Scanner tools
+Payload inside user-agent
+Example:
+Mozlila
+instead of
+Mozilla
+7. Log4Shell (Log4j) Detection
+Log4Shell exploit often appears in HTTP POST requests.
+Indicators
+jndi:ldap
+Exploit.clas
+Filters
+POST requests:
+http.request.method == "POST"
+Search exploit strings:
+
+frame contains "jndi"
+frame contains "Exploit"
+Suspicious User-Agent
+(http.user_agent contains "$") or (http.user_agent contains "==")
