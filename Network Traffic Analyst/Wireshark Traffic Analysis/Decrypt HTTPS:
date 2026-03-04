@@ -103,3 +103,13 @@ frame contains "jndi"
 frame contains "Exploit"
 Suspicious User-Agent
 (http.user_agent contains "$") or (http.user_agent contains "==")
+
+Protocol
+↓
+Key commands
+↓
+Important filters
+↓
+Threat indicators
+↓
+Investigation workflow
