@@ -1,0 +1,165 @@
+1. What is HTTPS
+
+HTTPS (HTTP Secure) uses TLS encryption to protect web traffic.
+
+This prevents:
+
+Packet sniffing
+
+Man-in-the-middle attacks
+
+Credential theft
+
+Because traffic is encrypted, analysts cannot see HTTP data without the TLS keys.
+
+2. Basic Filters
+Show HTTPS / TLS traffic
+tls
+Show HTTP requests (after decryption)
+http.request
+Ignore local SSDP noise
+ssdp
+
+SSDP = local device discovery (smart TVs, IoT, etc).
+
+3. TLS Handshake
+
+Like TCP’s 3-way handshake, TLS has its own handshake.
+
+Client Hello
+
+First packet sent by the client.
+
+Filter:
+
+tls.handshake.type == 1
+Server Hello
+
+Response from the server.
+
+Filter:
+
+tls.handshake.type == 2
+Find TLS communication pairs
+
+Client hello:
+
+(http.request or tls.handshake.type == 1) and !(ssdp)
+
+Server hello:
+
+(http.request or tls.handshake.type == 2) and !(ssdp)
+
+This helps identify:
+
+Client IP
+
+Server IP
+
+TLS sessions
+
+4. Decrypting HTTPS Traffic
+
+HTTPS can only be decrypted if you have TLS session keys.
+
+These are stored in a key log file.
+
+Example file:
+
+SSLKEYLOGFILE
+
+Browsers that support this:
+
+Chrome
+
+Firefox
+
+5. How Key Log Files Work
+
+When a TLS session starts:
+
+Browser generates session keys
+
+Keys are saved to SSLKEYLOGFILE
+
+Wireshark uses the keys to decrypt TLS traffic
+
+Without these keys → HTTPS cannot be decrypted.
+
+6. Add Key Log File in Wireshark
+
+Method 1:
+
+Right Click → Protocol Preferences → TLS → (Pre)-Master-Secret log filename
+
+Method 2:
+
+Edit → Preferences → Protocols → TLS
+
+Add:
+
+SSLKEYLOGFILE
+7. After Decryption You Can See
+
+Wireshark will reveal:
+
+HTTP requests
+
+URLs
+
+Headers
+
+Cookies
+
+POST data
+
+Files
+
+New fields appear:
+
+Decrypted TLS
+
+Decompressed Headers
+
+Reassembled TCP
+
+Reassembled SSL
+
+8. Investigation Workflow (SOC)
+
+1️⃣ Identify encrypted traffic
+
+tls
+
+2️⃣ Find TLS handshake
+
+tls.handshake.type == 1
+
+3️⃣ Identify communicating IPs
+
+4️⃣ Add key log file
+
+5️⃣ Inspect decrypted HTTP traffic
+
+http.request
+9. Key SOC Indicators
+
+Suspicious HTTPS traffic may show:
+
+Unknown domains
+
+Data exfiltration
+
+Malware downloads
+
+Command & Control (C2)
+
+Unusual TLS destinations
+
+Quick Summary
+Step	Action
+1	Filter TLS traffic
+2	Identify Client Hello / Server Hello
+3	Locate communicating IPs
+4	Add SSL key log file
+5	Inspect decrypted HTTP
