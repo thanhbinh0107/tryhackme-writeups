@@ -1,0 +1,42 @@
+IP and Domain Threat Intel
+SOC Analyst Workflow
+At this stage, our workflow in the SOC could look as follows. Be mindful that this would vary depending on established organisational processes and practices.
+
+Snapshot Current DNS: Capture A, NS, MX, TXT, SOA, and TTL values for the domain in question using a single page view and simple.
+Basic Ownership Check: Use WHOIS to note registrat, creation date and contact pattern, which supports a light ownership picture of the ticket.
+Interpret Patterns: Assess whether the DNS behaviour aligns with benign CDN activity or indicates malicious throwaway domain, noting down the details of the changing IPs.
+Log Evidence: Save screenshots or JSON extracts DNS and reputation pages to the case file for audit and escalation.
+Recommend Action: Based on findings, advise blocking if high risk, monitor if suspicious but inconclusive, or close if determined benign.
+
+IP Enrich:
+SOC Analyst Workflow
+At this stage, our workflow in the SOC could resemble the following, though it may vary depending on established organisational processes and practices.
+
+Start with RDAP: Confirm netrange, org, ASN, and abuse contacts.
+Add ASN Context: Check bgpview.io or ipinfo.io for ASN details and role.
+Check Geolocation: Capture country from at least two sources. Record mismatches.
+Look for rDNS Patterns: Reverse DNS can hint at hosting type (e.g., *[.]btcentralplus[.]com = UK broadband). Do not base decisions solely on rDNS.
+Consult Internal Logs: Has this IP appeared in the last 30 days? If yes, in what context?
+Classify Role: Hosting, residential, CDN, or cloud. Record reasoning.
+Plan Outreach: If confirmed malicious and in a cooperative ASN, prepare a report for the abuse contact.
+
+Reputation and Passive DNS
+In summary, our workflow in the SOC would look as follows. Be mindful that this would vary depending on established organisational processes and practices.
+
+Check VirusTotal: Record detection ratio, First Seen, Last Seen, and any community notes.
+Check Cisco Talos: Record reputation score and category, noting any changes in the last 30 days.
+Check IP2Proxy: Flag if VPN/proxy/Tor; adjust severity accordingly.
+Check Passive DNS: Record First Seen, Last Seen, number of IPs in the last 7 days, and ASN spread.
+Check CT Logs: Note certificate bursts, suspicious SANs.
+Cross-Reference with Wayback: Identify content shifts (benign → phishing).
+Decision: Block, monitor, or close, with expiry tied to observed activity.
+
+Operational Integration
+From Data to Decision
+We can now follow a simple playbook to make informed decisions when investigating an indicator.
+
+Verify: Confirm that the indicator appears in our telemetry and is relevant to our environment.
+Enrich: Collect geolocation, ASN, banners, certificates, reputation, and history.
+Score: Apply the confidence matrix and record the rationale.
+Decide: Block, monitor, or allow. Prefer precise controls, add expiry, and document.
+Hunt and notify: Search for related indicators, inform stakeholders, and create follow-up tasks.
